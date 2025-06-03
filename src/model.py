@@ -21,13 +21,13 @@ class CNN_LSTM_Model(nn.Module):
     ):
         super(CNN_LSTM_Model, self).__init__()
 
-        # 1D CNN layer
+
         self.cnn = nn.Conv1d(
             in_channels=input_dim, out_channels=cnn_channels, kernel_size=3, padding=1
         )
         self.relu = nn.ReLU()
 
-        # LSTM layer
+
         self.lstm = nn.LSTM(
             input_size=cnn_channels,
             hidden_size=lstm_hidden_dim,
@@ -35,24 +35,21 @@ class CNN_LSTM_Model(nn.Module):
             batch_first=True,
         )
 
-        # Fully connected output layer
+
         self.fc = nn.Linear(lstm_hidden_dim, output_dim)
 
     def forward(self, x):
-        # x shape: (batch_size, seq_len, features)
-        # Transpose to (batch_size, features, seq_len) for Conv1d
+
         x = x.transpose(1, 2)
 
-        cnn_out = self.relu(self.cnn(x))  # shape: (batch_size, cnn_channels, seq_len)
+        cnn_out = self.relu(self.cnn(x))  
 
-        # Transpose back for LSTM: (batch_size, seq_len, cnn_channels)
         cnn_out = cnn_out.transpose(1, 2)
 
         lstm_out, _ = self.lstm(
             cnn_out
-        )  # shape: (batch_size, seq_len, lstm_hidden_dim)
+        )  
 
-        # Use last timestep output for classification
         last_out = lstm_out[:, -1, :]
 
         out = self.fc(last_out)
@@ -133,17 +130,14 @@ for epoch in range(num_epochs):
 """
 df = pd.read_csv("../data/raw/cybersecurity_attacks_v1.0.csv")
 
-# Step 2: Encode features
 encoder = DataEncoder()
 X, y = encoder.encode(df)
 
-====# Step 3: Reattach Source IP and Timestamp for windowing logic
 X = pd.DataFrame(X)
 X["Source IP Address"] = df["Source IP Address"].values
 X["Timestamp"] = df["Timestamp"].values
 X["Attack Type"] = y
 
-# Step 4: Save processed DataFrame to a temporary CSV and use DatasetLoader
 X.to_csv("../data/processed/processed_temp.csv", index=False)
 print("saved successfully")
 loader = DatasetLoader("../data/processed/processed_temp.csv", window_size=5, stride=1)

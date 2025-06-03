@@ -9,10 +9,8 @@ import torch.optim as optim
 from torch.utils.data import TensorDataset, DataLoader
 
 
-# After your training loop...
 
 
-# Evaluation function
 def evaluate(model, data_loader):
     model.eval()
     all_preds = []
@@ -77,6 +75,5 @@ def evaluate(model, data_loader):
 # # Example usage:
 # evaluate(model, val_loader)
 
-# # Save the trained model
 # torch.save(model.state_dict(), "cnn_lstm_model.pth")
 # print("Model saved to cnn_lstm_model.pth")

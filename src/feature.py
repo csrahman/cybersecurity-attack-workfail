@@ -42,7 +42,6 @@ class FeatureSelectorEvaluator:
         for label, count in counter.items():
             print(f"Class {label}: {count} samples")
 
-        # Optional visualization
         plt.bar(counter.keys(), counter.values())
         plt.xlabel("Class")
         plt.ylabel("Number of Samples")
@@ -50,7 +49,6 @@ class FeatureSelectorEvaluator:
         plt.show()
 
     def _evaluate_model(self, X_train_fs, X_test_fs):
-        # Handle imbalance with class_weight if enabled
         model = RandomForestClassifier(
             random_state=self.random_state,
             class_weight="balanced" if self.handle_imbalance else None,
